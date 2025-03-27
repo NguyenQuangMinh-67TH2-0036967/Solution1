@@ -46,6 +46,43 @@ namespace _002_HelloWorld
             }
         }
     }
+    namespace A005_TaoListElements
+    {
+        [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+        public class Class1 : IExternalCommand
+        {
+            public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+            {
+                UIDocument uidoc = commandData.Application.ActiveUIDocument;
+                ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+                TaskDialog.Show("Revit", "Số lượng đối tượng được chọn: " + selectedIds.Count.ToString());
+
+                ICollection<ElementId> selectedWallIds = new List<ElementId>();
+                foreach (ElementId id in selectedIds)
+                {
+                    Element element1 = uidoc.Document.GetElement(id);
+                    if (element1 is Wall)
+                    {
+                        selectedWallIds.Add(id);
+                    }
+                }
+
+                // Set the created element set as current select element set.
+                uidoc.Selection.SetElementIds(selectedWallIds);
+                if (0 != selectedWallIds.Count)
+                {
+                    TaskDialog.Show("Revit", selectedWallIds.Count.ToString() + " Đối tượng Tường đã được chọn!");
+                }
+                else
+                {
+                    TaskDialog.Show("Revit", "Không có đối tượng tường nào được chọn!");
+                }
+
+                return Result.Succeeded;
+            }
+        }
+    }
+
 
 
 }
